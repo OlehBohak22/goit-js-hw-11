@@ -7,14 +7,13 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
-const loader = document.querySelector('#loader'); // Елемент індикатора завантаження
+const loader = document.querySelector('#loader');
 let page = 1;
 let query = '';
-let lightbox; // Екземпляр SimpleLightbox
+let lightbox;
 
 form.addEventListener('submit', onSubmit);
 
-// Ініціалізація lightbox у глобальному контексті
 function initializeLightbox() {
   lightbox = new SimpleLightbox('.gallery a');
 }
@@ -42,11 +41,11 @@ function onSubmit(event) {
   page = 1;
   gallery.innerHTML = '';
 
-  showLoader(); // Показуємо індикатор перед початком запиту
+  showLoader();
 
   fetchImages(query, page)
     .then(data => {
-      hideLoader(); // Приховуємо індикатор після завершення запиту
+      hideLoader();
 
       if (!data || data.hits.length === 0) {
         iziToast.error({
@@ -59,13 +58,13 @@ function onSubmit(event) {
       renderGallery(data.hits);
 
       if (!lightbox) {
-        initializeLightbox(); // Ініціалізація при першому завантаженні
+        initializeLightbox();
       } else {
-        lightbox.refresh(); // Оновлення lightbox після кожного нового рендеру
+        lightbox.refresh();
       }
     })
     .catch(error => {
-      hideLoader(); // Приховуємо індикатор при помилці
+      hideLoader();
       iziToast.error({
         title: 'Error',
         message: 'Something went wrong. Please try again.',
