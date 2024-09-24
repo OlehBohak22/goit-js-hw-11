@@ -2,10 +2,10 @@ import{i as a,S as m}from"./assets/vendor-CMdlDMgr.js";(function(){const t=docum
     <a href="${e.largeImageURL}" class="gallery-item">
       <img src="${e.webformatURL}" alt="${e.tags}" loading="lazy" />
       <div class="info">
-        <p><b>Likes</b>: ${e.likes}</p>
-        <p><b>Views</b>: ${e.views}</p>
-        <p><b>Comments</b>: ${e.comments}</p>
-        <p><b>Downloads</b>: ${e.downloads}</p>
+        <p><b>Likes</b> ${e.likes}</p>
+        <p><b>Views</b> ${e.views}</p>
+        <p><b>Comments</b> ${e.comments}</p>
+        <p><b>Downloads</b> ${e.downloads}</p>
       </div>
     </a>
   `).join("");t.innerHTML=i}const b=document.querySelector("#search-form"),L=document.querySelector(".gallery"),d=document.querySelector("#loader");let u=1,l="",c;b.addEventListener("submit",S);function w(){c=new m(".gallery a")}function $(){d.classList.remove("hidden")}function f(){d.classList.add("hidden")}function S(n){if(n.preventDefault(),l=n.target.elements.searchQuery.value.trim(),!l){a.warning({title:"Warning",message:"Please enter a search query."});return}u=1,L.innerHTML="",$(),h(l,u).then(t=>{if(f(),!t||t.hits.length===0){a.error({title:"Error",message:"No images found. Please try again."});return}y(t.hits),c?c.refresh():w()}).catch(t=>{f(),a.error({title:"Error",message:"Something went wrong. Please try again."})})}
