@@ -7,12 +7,27 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
+const loader = document.querySelector('#loader'); // Елемент індикатора завантаження
 let page = 1;
 let query = '';
+let lightbox; // Екземпляр SimpleLightbox
 
 form.addEventListener('submit', onSubmit);
 
-async function onSubmit(event) {
+// Ініціалізація lightbox у глобальному контексті
+function initializeLightbox() {
+  lightbox = new SimpleLightbox('.gallery a');
+}
+
+function showLoader() {
+  loader.classList.remove('hidden');
+}
+
+function hideLoader() {
+  loader.classList.add('hidden');
+}
+
+function onSubmit(event) {
   event.preventDefault();
   query = event.target.elements.searchQuery.value.trim();
 
@@ -26,21 +41,34 @@ async function onSubmit(event) {
 
   page = 1;
   gallery.innerHTML = '';
-  try {
-    const data = await fetchImages(query, page);
-    if (data.hits.length === 0) {
+
+  showLoader(); // Показуємо індикатор перед початком запиту
+
+  fetchImages(query, page)
+    .then(data => {
+      hideLoader(); // Приховуємо індикатор після завершення запиту
+
+      if (!data || data.hits.length === 0) {
+        iziToast.error({
+          title: 'Error',
+          message: 'No images found. Please try again.',
+        });
+        return;
+      }
+
+      renderGallery(data.hits);
+
+      if (!lightbox) {
+        initializeLightbox(); // Ініціалізація при першому завантаженні
+      } else {
+        lightbox.refresh(); // Оновлення lightbox після кожного нового рендеру
+      }
+    })
+    .catch(error => {
+      hideLoader(); // Приховуємо індикатор при помилці
       iziToast.error({
         title: 'Error',
-        message: 'No images found. Please try again.',
+        message: 'Something went wrong. Please try again.',
       });
-      return;
-    }
-    renderGallery(data.hits);
-    new SimpleLightbox('.gallery a').refresh();
-  } catch (error) {
-    iziToast.error({
-      title: 'Error',
-      message: 'Something went wrong. Please try again.',
     });
-  }
 }
